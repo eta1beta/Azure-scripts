@@ -1,0 +1,54 @@
+## LOGIN
+azure login
+
+## ACCEDE ALLA MODALITA' ARM
+azure config mode arm   
+
+## SPOSTA IL FUOCO SU ABBONAMENTO FREE 54
+azure account set nnnnn-nnnnn-nnnn-nnnn-nnnnnnnnnn 
+
+## ACCENDERE VM E SYSPREPPARLA
+## da macchina rdp con software (powershell)
+& "$Env:SystemRoot\system32\sysprep\sysprep.exe" /generalize /oobe /shutdown
+
+
+## PREPARAZIONE VM ORIGINE
+## http://www.codeisahighway.com/how-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager-api/#AfterCapture
+
+## CATTURA VM CON ARM EXPLORER
+## http://www.codeisahighway.com/how-to-use-arm-explorer-to-capture-your-own-custom-virtual-machine-image-under-azure-resource-manager/
+
+## LINK VHD IMMAGINE COPIATO DA INTERFACCIA
+## https://STORAGEACCOUNTNNNN.blob.core.windows.net/system/Microsoft.Compute/Images/bocconitemplate/vhdtemplate-osDisk.NNNNNNNNNNNNNNNN.vhd
+
+## SCRIPTE AZURE CLI PER CREAZIONE VM DA IMMAGINE
+azure vm create 
+--resource-group NOMERESOURCEGROUP 
+--location westeurope 
+--name NOMEVM 
+--os-type windows 
+--admin-username USER
+--admin-password PASSWORD 
+--nic-name NOMENIC 
+--vnet-name NOMEVNET 
+--vnet-address-prefix 10.1.0.0/16 
+--vnet-subnet-name default 
+--vnet-subnet-address-prefix 10.1.0.0/24 
+--storage-account-name  NOMESTORAGEACCOUNT 
+--os-disk-vhd hd1-studente1.vhd 
+-Q https://STORAGEACCOUNTNNNN.blob.core.windows.net/system/Microsoft.Compute/Images/bocconitemplate/vhdtemplate-osDisk.NNNNNNNNNNNNNNNN.vhd
+
+
+## SCRIPT PER CREAZIONE IP PUBBLICO DINAMICO CON NOME DNS # *.westeurope.cloudapp.azure.com
+azure network public-ip create 
+--name NOMEPUBLICIP 
+--resource-group NOMERESOURCEGROUP 
+--location westeurope 
+--allocation-method Dynamic 
+--domain-name-label NOMEDOMAINLABEL  
+
+## SCRIPT PER SET NIC CON IP PUBBLICO
+azure network nic set 
+--public-ip-name NOMEPUBLICIP 
+--resource-group NOMERESOURCEGROUP 
+--name NOMENIC
